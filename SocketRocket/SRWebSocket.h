@@ -93,7 +93,11 @@ extern NSString *const SRWebSocketErrorDomain;
 
 @interface NSURLRequest (CertificateAdditions)
 
-@property (nonatomic, retain, readonly) NSArray *SR_SSLPinnedCertificates;
+// array of SecCertificateRef objects used to verify server certificates
+@property (nonatomic, retain, readonly) NSArray * SR_SSLPinnedCertificates;
+
+// array of objects for client authentication. for simple cases, the first element should be SecIdentityRef and second is SecCertificateRef
+@property (nonatomic, retain, readonly) NSArray * SR_SSLClientCertificates;
 
 @end
 
@@ -101,7 +105,8 @@ extern NSString *const SRWebSocketErrorDomain;
 
 @interface NSMutableURLRequest (CertificateAdditions)
 
-@property (nonatomic, retain) NSArray *SR_SSLPinnedCertificates;
+@property (nonatomic, retain) NSArray * SR_SSLPinnedCertificates;
+@property (nonatomic, retain) NSArray * SR_SSLClientCertificates;
 
 @end
 

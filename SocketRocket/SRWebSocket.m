@@ -581,6 +581,11 @@ static __strong NSData *CRLFCRLF;
             [SSLOptions setValue:[NSNumber numberWithBool:NO] forKey:(__bridge id)kCFStreamSSLValidatesCertificateChain];
         }
         
+        // if client certificates are specified, configure the stream appropriately
+        if ([_urlRequest SR_SSLClientCertificates].count) {
+            [SSLOptions setObject:[_urlRequest SR_SSLClientCertificates] forKey:(NSString*)kCFStreamSSLCertificates];
+        }
+        
 #if DEBUG
         [SSLOptions setValue:[NSNumber numberWithBool:NO] forKey:(__bridge id)kCFStreamSSLValidatesCertificateChain];
         NSLog(@"SocketRocket: In debug mode.  Allowing connection to any root cert");
@@ -1561,23 +1566,38 @@ static const size_t SRFrameHeaderOverhead = 32;
 
 @implementation  NSURLRequest (CertificateAdditions)
 
-- (NSArray *)SR_SSLPinnedCertificates;
+- (NSArray *)SR_SSLPinnedCertificates
 {
     return [NSURLProtocol propertyForKey:@"SR_SSLPinnedCertificates" inRequest:self];
+}
+
+- (NSArray *)SR_SSLClientCertificates
+{
+    return [NSURLProtocol propertyForKey:@"SR_SSLClientCertificates" inRequest:self];
 }
 
 @end
 
 @implementation  NSMutableURLRequest (CertificateAdditions)
 
-- (NSArray *)SR_SSLPinnedCertificates;
+- (NSArray *)SR_SSLPinnedCertificates
 {
     return [NSURLProtocol propertyForKey:@"SR_SSLPinnedCertificates" inRequest:self];
 }
 
-- (void)setSR_SSLPinnedCertificates:(NSArray *)SR_SSLPinnedCertificates;
+- (void)setSR_SSLPinnedCertificates:(NSArray *)SR_SSLPinnedCertificates
 {
     [NSURLProtocol setProperty:SR_SSLPinnedCertificates forKey:@"SR_SSLPinnedCertificates" inRequest:self];
+}
+
+-(NSArray *)SR_SSLClientCertificates
+{
+    return [NSURLProtocol propertyForKey:@"SR_SSLClientCertificates" inRequest:self];
+}
+
+-(void)setSR_SSLClientCertificates:(NSArray *)SR_SSLClientCertificates
+{
+    [NSURLProtocol setProperty:SR_SSLClientCertificates forKey:@"SR_SSLClientCertificates" inRequest:self];
 }
 
 @end
